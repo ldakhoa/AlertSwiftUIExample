@@ -80,6 +80,51 @@ import SwiftUI
 ////    }
 //}
 
+public struct AlertBannerView2: View {
+    public let title: String
+    public let subTitle: String
+    public let leadingImageName: String
+    public let trailingImageName: String
+    public let backgroundColor: Color
+    public let contentForegroundColor: Color
+
+    public var body: some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: leadingImageName)
+                .font(.system(size: 14))
+                .foregroundColor(contentForegroundColor)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(title)
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(contentForegroundColor)
+
+                Text(subTitle)
+                    .font(.system(size: 12))
+                    .lineLimit(10)
+                    .foregroundColor(contentForegroundColor)
+            }
+            Spacer()
+
+            VStack {
+                Spacer()
+                Button {
+                    print("Did press")
+                } label: {
+                    Image(trailingImageName)
+                        .font(.system(size: 14))
+                }
+                .foregroundColor(contentForegroundColor)
+                Spacer()
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(backgroundColor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
 public struct AlertBannerView: View {
     // MARK: - Dependencies
 
@@ -203,6 +248,15 @@ public struct AlertBannerView: View {
                 subTitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
             )
             .alertBannerType(.warning)
+
+            AlertBannerView2(
+                title: "Title",
+                subTitle: "Lorem ipsum dolor sit amet",
+                leadingImageName: "info.circle",
+                trailingImageName: "xmark",
+                backgroundColor: Color.black,
+                contentForegroundColor: Color.white
+            )
         }
     }
 
