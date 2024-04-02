@@ -107,16 +107,8 @@ public struct AlertBannerView: View {
                 .font(.system(size: 14))
                 .foregroundColor(contentForegroundColor)
 
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title)
-                    .font(.system(size: 14, weight: .bold))
-                    .foregroundColor(contentForegroundColor)
-
-                Text(subTitle)
-                    .font(.system(size: 12))
-                    .foregroundColor(contentForegroundColor)
-                    .lineLimit(10)
-            }
+            content
+            
             Spacer()
 
             trailingButton
@@ -125,6 +117,20 @@ public struct AlertBannerView: View {
         .padding(.vertical, 12)
         .background(backgroundColor)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(contentForegroundColor)
+
+            Text(subTitle)
+                .font(.system(size: 12))
+                .foregroundColor(contentForegroundColor)
+                .lineLimit(10)
+        }
     }
 
     private var leadingIconName: String {
@@ -215,7 +221,6 @@ extension EnvironmentValues {
         get { self[AlertBannerViewHandler.self] }
         set { self[AlertBannerViewHandler.self] = newValue }
     }
-
 }
 
 extension View {
