@@ -83,8 +83,6 @@ import SwiftUI
 public struct AlertBannerView: View {
     // MARK: - Dependencies
 
-    //    private let leadingImageName: String
-    //    private let rightImageName: String
     private let title: String
     private let subTitle: String
 
@@ -229,21 +227,21 @@ extension View {
     }
 }
 
-// MARK: - AlertBannerStyle
+// MARK: - AlertBannerType
 
 public enum AlertBannerType {
     case warning
     case info
 }
 
-private struct AlertBannerStyleKey: EnvironmentKey {
+private struct AlertBannerTypeKey: EnvironmentKey {
     static var defaultValue: AlertBannerType = .info
 }
 
 extension EnvironmentValues {
     var alertBannerType: AlertBannerType {
-        get { self[AlertBannerStyleKey.self] }
-        set { self[AlertBannerStyleKey.self] = newValue }
+        get { self[AlertBannerTypeKey.self] }
+        set { self[AlertBannerTypeKey.self] = newValue }
     }
 }
 
@@ -272,28 +270,156 @@ extension View {
     }
 }
 
-// MARK: - Custom Styling
+// MARK: - AlertBannerStyle (Custom Styling)
 
-struct AlertBannerConfiguration {
-    var leadingImageName: String
-    var title: String
-    var subTitle: String
-    var rightImageName: String
+public struct AlertBannerConfiguration {
+    let title: String
+    let subTitle: String
+
+    struct Title: View {
+        let underlyingTitle: AnyView
+
+        init(_ title: some View) {
+            self.underlyingTitle = AnyView(title)
+        }
+
+        var body: some View {
+            underlyingTitle
+        }
+    }
+
+    struct SubTitle: View {
+        let underlyingSubTitle: AnyView
+
+        init(_ subTitle: some View) {
+            self.underlyingSubTitle = AnyView(subTitle)
+        }
+
+        var body: some View {
+            underlyingSubTitle
+        }
+    }
+
+    public init(title: String, subTitle: String) {
+        self.title = title
+        self.subTitle = subTitle
+    }
 }
 
-//protocol AlertBannerStyle {
-//    associatedtype Body: View
-//
-//    typealias Configuration = AlertBannerConfiguration
-//
-//    func makeBody(configuration: Configuration) -> Body
-//}
+public protocol AlertBannerStyle {
+    associatedtype Body: View
 
+    typealias Configuration = AlertBannerConfiguration
 
-//struct DefaultAlertBannerStyle: AlertBannerStyle {
-//    func makeBody(configuration: Configuration) -> some View {
-//        HStack {
-//
-//        }
-//    }
-//}
+    func makeBody(configuration: Configuration) -> Body
+}
+
+private struct AlertBannerStyleKey: EnvironmentKey {
+    static var defaultValue: any AlertBannerStyle = DefaultAlertBannerStyle()
+}
+
+extension EnvironmentValues {
+    var alertBannerStyle: any AlertBannerStyle {
+        get { self[AlertBannerStyleKey.self] }
+        set { self[AlertBannerStyleKey.self] = newValue }
+    }
+}
+
+extension View {
+    public func alertBannerStyle(_ style: some AlertBannerStyle) -> some View {
+        environment(\.alertBannerStyle, style)
+    }
+}
+
+struct DefaultAlertBannerStyle: AlertBannerStyle {
+    @Environment(\.alertBannerType) private var type
+    @Environment(\.closeButtonHidden) private var closeButtonHidden
+    @Environment(\.actionHandler) private var actionHandler
+
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Image(systemName: leadingIconName)
+                .font(.system(size: 14))
+                .foregroundColor(contentForegroundColor)
+
+            content(configuration: configuration)
+
+            Spacer()
+
+            trailingButton
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(backgroundColor)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    @ViewBuilder
+    private func content(configuration: Configuration) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(configuration.title)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundColor(contentForegroundColor)
+
+            Text(configuration.subTitle)
+                .font(.system(size: 12))
+                .foregroundColor(contentForegroundColor)
+                .lineLimit(10)
+        }
+    }
+
+    private var leadingIconName: String {
+        switch type {
+        case .info:
+            return "info.circle"
+        case .warning:
+            return "exclamationmark.circle"
+        }
+    }
+
+    @ViewBuilder
+    private var backgroundColor: some View {
+        switch type {
+        case .info:
+            Color.black
+        case .warning:
+            Color.semanticNotice
+        }
+    }
+
+    private var contentForegroundColor: Color {
+        switch type {
+        case .info:
+            return Color.white
+        case .warning:
+            return Color.black
+        }
+    }
+
+    @ViewBuilder
+    private var trailingButton: some View {
+        VStack {
+            if closeButtonHidden {
+                Spacer()
+            }
+
+            Button {
+                if let actionHandler {
+                    actionHandler()
+                }
+            } label: {
+                Image(systemName: trailingButtonImageName)
+                    .font(.system(size: 14))
+                    .foregroundColor(contentForegroundColor)
+            }
+
+            if closeButtonHidden {
+                Spacer()
+            }
+        }
+    }
+
+    private var trailingButtonImageName: String {
+        closeButtonHidden ? "chevron.right" : "xmark"
+    }
+}
