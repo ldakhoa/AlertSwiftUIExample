@@ -125,4 +125,6 @@ extension Color {
     }
     
     static let semanticNotice = Color(colorValue: ColorValue(0xFFB117))
+    static let neutral_150 = Color(colorValue: ColorValue(0x414141))
+    static let neonLime_020 = Color(colorValue: ColorValue(0xBCFF2F))
 }

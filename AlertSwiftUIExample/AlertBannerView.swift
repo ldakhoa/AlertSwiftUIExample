@@ -140,7 +140,6 @@ public struct AlertBannerView: View {
 
     @Environment(\.alertBannerType) private var type
     @Environment(\.closeButtonHidden) private var closeButtonHidden
-    @Environment(\.actionHandler) private var actionHandler
 
     // MARK: - View
 
@@ -182,6 +181,8 @@ public struct AlertBannerView: View {
             return "info.circle"
         case .warning:
             return "exclamationmark.circle"
+//        case .highlight:
+//            return "bell"
         }
     }
 
@@ -189,9 +190,11 @@ public struct AlertBannerView: View {
     private var backgroundColor: some View {
         switch type {
         case .info:
-            Color.black
+            Color.neutral_150
         case .warning:
             Color.semanticNotice
+//        case .highlight:
+//            Color.neonLime_020
         }
     }
 
@@ -201,9 +204,13 @@ public struct AlertBannerView: View {
             return Color.white
         case .warning:
             return Color.black
+//        case .highlight:
+//            return Color.black
         }
     }
 
+    @Environment(\.actionHandler) private var actionHandler
+    
     @ViewBuilder
     private var trailingButton: some View {
         VStack {
@@ -391,89 +398,91 @@ struct DefaultAlertBannerStyle: AlertBannerStyle {
     @Environment(\.actionHandler) private var actionHandler
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(alignment: .top, spacing: 8) {
-            Image(systemName: leadingIconName)
-                .font(.system(size: 14))
-                .foregroundColor(contentForegroundColor)
-
-            content(configuration: configuration)
-
-            Spacer()
-
-            trailingButton
-        }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(backgroundColor)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        HStack {}
+//        HStack(alignment: .top, spacing: 8) {
+//            Image(systemName: leadingIconName)
+//                .font(.system(size: 14))
+//                .foregroundColor(contentForegroundColor)
+//
+//            content(configuration: configuration)
+//
+//            Spacer()
+//
+//            trailingButton
+//        }
+//        .padding(.horizontal, 16)
+//        .padding(.vertical, 12)
+//        .background(backgroundColor)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 
-    @ViewBuilder
-    private func content(configuration: Configuration) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(configuration.title)
-                .font(.system(size: 14, weight: .bold))
-                .foregroundColor(contentForegroundColor)
-
-            Text(configuration.subTitle)
-                .font(.system(size: 12))
-                .foregroundColor(contentForegroundColor)
-                .lineLimit(10)
-        }
-    }
-
-    private var leadingIconName: String {
-        switch type {
-        case .info:
-            return "info.circle"
-        case .warning:
-            return "exclamationmark.circle"
-        }
-    }
-
-    @ViewBuilder
-    private var backgroundColor: some View {
-        switch type {
-        case .info:
-            Color.black
-        case .warning:
-            Color.semanticNotice
-        }
-    }
-
-    private var contentForegroundColor: Color {
-        switch type {
-        case .info:
-            return Color.white
-        case .warning:
-            return Color.black
-        }
-    }
-
-    @ViewBuilder
-    private var trailingButton: some View {
-        VStack {
-            if closeButtonHidden {
-                Spacer()
-            }
-
-            Button {
-                if let actionHandler {
-                    actionHandler()
-                }
-            } label: {
-                Image(systemName: trailingButtonImageName)
-                    .font(.system(size: 14))
-                    .foregroundColor(contentForegroundColor)
-            }
-
-            if closeButtonHidden {
-                Spacer()
-            }
-        }
-    }
-
-    private var trailingButtonImageName: String {
-        closeButtonHidden ? "chevron.right" : "xmark"
-    }
+//    @ViewBuilder
+//    private func content(configuration: Configuration) -> some View {
+//        VStack(alignment: .leading, spacing: 4) {
+//            Text(configuration.title)
+//                .font(.system(size: 14, weight: .bold))
+//                .foregroundColor(contentForegroundColor)
+//
+//            Text(configuration.subTitle)
+//                .font(.system(size: 12))
+//                .foregroundColor(contentForegroundColor)
+//                .lineLimit(10)
+//        }
+//    }
+//
+//    private var leadingIconName: String {
+//        switch type {
+//        case .info:
+//            return "info.circle"
+//        case .warning:
+//            return "exclamationmark.circle"
+//            
+//        }
+//    }
+//
+//    @ViewBuilder
+//    private var backgroundColor: some View {
+//        switch type {
+//        case .info:
+//            Color.black
+//        case .warning:
+//            Color.semanticNotice
+//        }
+//    }
+//
+//    private var contentForegroundColor: Color {
+//        switch type {
+//        case .info:
+//            return Color.white
+//        case .warning:
+//            return Color.black
+//        }
+//    }
+//
+//    @ViewBuilder
+//    private var trailingButton: some View {
+//        VStack {
+//            if closeButtonHidden {
+//                Spacer()
+//            }
+//
+//            Button {
+//                if let actionHandler {
+//                    actionHandler()
+//                }
+//            } label: {
+//                Image(systemName: trailingButtonImageName)
+//                    .font(.system(size: 14))
+//                    .foregroundColor(contentForegroundColor)
+//            }
+//
+//            if closeButtonHidden {
+//                Spacer()
+//            }
+//        }
+//    }
+//
+//    private var trailingButtonImageName: String {
+//        closeButtonHidden ? "chevron.right" : "xmark"
+//    }
 }

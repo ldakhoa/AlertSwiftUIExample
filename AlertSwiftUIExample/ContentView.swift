@@ -15,15 +15,29 @@ struct ContentView: View {
             VStack {
                 Text("Alert OKDS Demo")
                 AlertBannerView(
-                    title: "Title",
+                    title: "Warning alert",
                     subTitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
                 )
                 .alertBannerType(.warning)
+                
+                AlertBannerView(
+                    title: "Info alert",
+                    subTitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+                )
+                .alertBannerType(.info)
                 .onTapAction {
                     isTapped.toggle()
                 }
                 .alert("Tapped", isPresented: $isTapped) {
                 }
+                
+//                AlertBannerView(
+//                    title: "Title",
+//                    subTitle: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
+//                )
+//                .alertBannerType(.info)
+//                .closeButtonHidden()
+
             }
         }
     }
